@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#PBS -N archive_krat
+#PBS -q darwin
+#PBS -l nodes=1:ppn=1,naccesspolicy=shared
+#PBS -l walltime=336:00:00
+#PBS -m abe
+#PBS -M jwillou@purdue.edu
+
+#set working directory
+wd="/scratch/snyder/j/jwillou/masterbayes/"
+cd $wd
+
+#set name for compressed/archived directory
+dname="krat_backup_"
+
+#set path for archiving - personal
+apath="/home/jwillou/krat/"
+
+#set path for archiving - lab
+alpath="/group/christ99/krat/"
+
+#make a list of current directories
+find -maxdepth 1 -mindepth 1 -type d -printf '%f\n' > directories.txt
+
+#make temporary directory
+mkdir temporary
+
+#tar/compress all directories and put them into the temporary directory
+cat directories.txt | while read -r LINE
+	do
+	name=$(echo $LINE | awk '{print $1}')
+	tar -cjf  $name.tar $name
+	mv $name.tar temporary/$name.tar
+done
+
+#renamee directory to include the current date
+currdate=$(date +"%Y_%m_%d")
+tar -cf $dname$currdate.tar temporary
+
+#copy to personal space on fortress
+hsi put $wd$dname$currdate.tar : $apath$dname$currdate.tar
+ 
+#copy to christie lab space on fortress
+hsi put $wd$dname$currdate.tar : $alpath$dname$currdate.tar
+
+#clean up backup from scratch space
+#rm steelhead_mykiss_backup_$currdate.tar
+#rm directories.txt
+#/bin/rm -r temporary

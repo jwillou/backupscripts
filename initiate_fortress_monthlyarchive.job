@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#PBS -N init_archive
+#PBS -q darwin
+#PBS -l nodes=1:ppn=1,naccesspolicy=shared
+#PBS -l walltime=336:00:00
+#PBS -m abe
+#PBS -M jwillou@purdue.edu
+
+cd $PBS_O_WORKDIR
+
+##access files for good measure:
+qsub /scratch/snyder/j/jwillou/backupscripts/touch.job
+
+##directories to copy:
+qsub /scratch/snyder/j/jwillou/masterbayes/fortress_monthlyarchive_krat.job
+qsub /scratch/snyder/j/jwillou/pupfish/fortress_monthlyarchive_pupfish.job
+qsub /scratch/snyder/j/jwillou/wgs/fortress_monthlyarchive_wgs.job
+
+##dormant directories:
+#qsub /scratch/snyder/j/jwillou/backupscripts/fortress_monthlyarchive_backupscripts.job
+#qsub /scratch/snyder/j/jwillou/other/fortress_monthlyarchive_other.job
+#qsub /scratch/snyder/j/jwillou/isodrift/fortress_monthlyarchive_isodrift.job
+#qsub /scratch/snyder/j/jwillou/ibm_captivity/fortress_monthlyarchive_ibm.job
+#qsub /scratch/snyder/j/jwillou/salmon_poolseq/bwa_mem/ssalar/fortress_monthlyarchive_salar.job
+#qsub /scratch/snyder/j/jwillou/salmon_poolseq/bwa_mem/lien/fortress_monthlyarchive_mykiss.job
